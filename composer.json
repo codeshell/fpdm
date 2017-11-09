@@ -4,7 +4,8 @@
 	"type" : "library",
 	"license" : "MIT",
 	"authors" : [{
-			"name" : "Olivier",
+			"name" : "Olivier Plathey",
+			"email" : "oliver@fpdf.org",
 			"homepage" : "http://www.fpdf.org/",
 			"role" : "Author"
 		}, {
@@ -39,5 +40,9 @@
 		"fill",
 		"populate",
 		"FPDF"
-	]
+	],
+	"support" : {
+		"issues" : "https://github.com/codeshell/fpdm/issues",
+		"source" : "https://github.com/codeshell/fpdm/tree/master"
+	}
 }
