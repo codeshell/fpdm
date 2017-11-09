@@ -64,45 +64,45 @@ if (!call_user_func_array('class_exists', $__tmp)) {
     //@@@@@@@@@
 	
 
-        var $pdf_source;      //string: full pathname to the input pdf , a form file
-        var $fdf_source;	  //string: full pathname to the input fdf , a form data file
-		var $pdf_output;      //string: full pathname to the resulting filled pdf 
+		var $pdf_source = '';      //string: full pathname to the input pdf , a form file
+		var $fdf_source = '';	  //string: full pathname to the input fdf , a form data file
+		var $pdf_output = '';      //string: full pathname to the resulting filled pdf 
 		
-        var $pdf_entries;     //array: Holds the content of the pdf file as array
-		var $fdf_content;     //string: holds the content of the fdf file
-		var $fdf_parse_needed;//boolean: false will use $fields data else extract data from fdf content 
-		var $value_entries;   //array: a map of values to faliclitate access and changes 
-        
-		var $positions; 	  //array, stores what object id is at a given position n ($positions[n]=<obj_id>)
+		var $pdf_entries = array();     //array: Holds the content of the pdf file as array
+		var $fdf_content = '';     //string: holds the content of the fdf file
+		var $fdf_parse_needed = false;//boolean: false will use $fields data else extract data from fdf content 
+		var $value_entries = array();   //array: a map of values to faliclitate access and changes 
 		
-		var $offsets;   	  //array of offsets for objects, index is the object's id, starting at 1
-		var $pointer;   	  //integer, Current line position in the pdf file during the parsing 
+		var $positions = array(); 	  //array, stores what object id is at a given position n ($positions[n]=<obj_id>)
 		
-		var $shifts;    	  //array, Shifts of objects in the order positions they appear in the pdf, starting at 0.
-		var $shift;     	  //integer, Global shift file size due to object values size changes
+		var $offsets = array();   	  //array of offsets for objects, index is the object's id, starting at 1
+		var $pointer = 0;   	  //integer, Current line position in the pdf file during the parsing 
 		
-		var $streams;         //Holds streams configuration found during parsing
-		var $streams_filter;  //Regexp to decode filter streams
+		var $shifts = array();    	  //array, Shifts of objects in the order positions they appear in the pdf, starting at 0.
+		var $shift = 0;     	  //integer, Global shift file size due to object values size changes
 		
-		var $safe_mode;       //boolean, if set, ignore previous offsets do no calculations for the new xref table, seek pos directly in file
-		var $check_mode;      //boolean, Use this to track offset calculations errors in corrupteds pdfs files for sample
-		var $halt_mode; 	  //if true, stops when offset error is encountered
+		var $streams = '';         //Holds streams configuration found during parsing
+		var $streams_filter = '';  //Regexp to decode filter streams
 		
-		var $info; 			  //array, holds the info properties
-        var $fields; 		  //array that holds fields-Data parsed from FDF
+		var $safe_mode = false;       //boolean, if set, ignore previous offsets do no calculations for the new xref table, seek pos directly in file
+		var $check_mode = false;      //boolean, Use this to track offset calculations errors in corrupteds pdfs files for sample
+		var $halt_mode = false; 	  //if true, stops when offset error is encountered
 		
-		var $verbose;         //boolean ,  a debug flag to decide whether or not to show internal process 
-		var $verbose_level;   //integer default is 1 and if greater than 3, shows internal parsing as well
+		var $info = array(); 			  //array, holds the info properties
+		var $fields = array(); 		  //array that holds fields-Data parsed from FDF
 		
-		var $support; 		  //string set to 'native' for fpdm or 'pdftk' for pdf toolkit
-		var $flatten_mode;	  //if true, flatten field data as text and remove form fields (NOT YET SUPPORTED BY FPDM)
-		var $compress_mode;   //boolean , pdftk feature only to compress streams
-		var $uncompress_mode; //boolean pdftk feature only to uncompress streams
-		var $security;        //Array holding securtity settings  
+		var $verbose = false;         //boolean ,  a debug flag to decide whether or not to show internal process 
+		var $verbose_level = 1;   //integer default is 1 and if greater than 3, shows internal parsing as well
+		
+		var $support = ''; 		  //string set to 'native' for fpdm or 'pdftk' for pdf toolkit
+		var $flatten_mode = false;	  //if true, flatten field data as text and remove form fields (NOT YET SUPPORTED BY FPDM)
+		var $compress_mode = false;   //boolean , pdftk feature only to compress streams
+		var $uncompress_mode = false; //boolean pdftk feature only to uncompress streams
+		var $security = array();        //Array holding securtity settings  
 							  //(password owner nad user,  encrypt (set to 40 or 128 or 0), allow <permissions>] see pdfk help
 
-		var $needAppearancesTrue;	//boolean, indicates if /NeedAppearances is already set to true
-		var $isUTF8;				//boolean (true for UTF-8, false for ISO-8859-1)
+		var $needAppearancesTrue = false;	//boolean, indicates if /NeedAppearances is already set to true
+		var $isUTF8 = false;				//boolean (true for UTF-8, false for ISO-8859-1)
 		
         /**
          * Constructor
@@ -112,7 +112,7 @@ if (!call_user_func_array('class_exists', $__tmp)) {
 		 *@param string $fdf_source Source-Filename
 		 *@param boolean $verbose , optional false per default
          */
-    	function FPDM() { 
+    	function __construct() { 
 		//==============
 		
 			$args=func_get_args();
@@ -617,7 +617,7 @@ if (!call_user_func_array('class_exists', $__tmp)) {
 					$this->Error($ret["return"]);
 			}
 			
-			$this->buffer=$this->get_buffer($pdf_file);
+			//$this->buffer=$this->get_buffer($pdf_file);
 			
 			
 			$dest=strtoupper($dest);
@@ -649,13 +649,13 @@ if (!call_user_func_array('class_exists', $__tmp)) {
 						header('Content-Type: application/pdf');
 						if(headers_sent())
 							$this->Error('Some data has already been output, can\'t send PDF file');
-						header('Content-Length: '.strlen($this->buffer));
+						header('Content-Length: '.strlen($this->get_buffer()));
 						header('Content-Disposition: inline; filename="'.$name.'"');
 						header('Cache-Control: private, max-age=0, must-revalidate');
 						header('Pragma: public');
 						ini_set('zlib.output_compression','0');
 					}
-					echo $this->buffer;
+					echo $this->get_buffer();
 					break;
 				case 'D':
 					//Download file
@@ -664,7 +664,7 @@ if (!call_user_func_array('class_exists', $__tmp)) {
 					header('Content-Type: application/x-download');
 					if(headers_sent())
 						$this->Error('Some data has already been output, can\'t send PDF file');
-					header('Content-Length: '.strlen($this->buffer));
+					header('Content-Length: '.strlen($this->get_buffer()));
 					header('Content-Disposition: attachment; filename="'.$name.'"');
 					
 					header("Expires: Mon, 26 Jul 1997 05:00:00 GMT"); // Date in the past
@@ -676,7 +676,7 @@ if (!call_user_func_array('class_exists', $__tmp)) {
 					header('Cache-Control: private, max-age=0, must-revalidate');
 					header('Pragma: public,no-cache');
 					ini_set('zlib.output_compression','0');
-					echo $this->buffer;
+					echo $this->get_buffer();
 					break;
 				case 'F':
 					//Save to local file
@@ -685,12 +685,12 @@ if (!call_user_func_array('class_exists', $__tmp)) {
 					if(!$f)
 						$this->Error('Unable to create output file: '.$name.' (currently opened under Acrobat Reader?)');
 						
-					fwrite($f,$this->buffer,strlen($this->buffer));
+					fwrite($f,$this->get_buffer(),strlen($this->get_buffer()));
 					fclose($f);
 					break;
 				case 'S':
 					//Return as a string
-					return $this->buffer;
+					return $this->get_buffer();
 				default:
 					$this->Error('Incorrect output destination: '.$dest);
 			}
@@ -1111,7 +1111,7 @@ if (!call_user_func_array('class_exists', $__tmp)) {
 		/**
          * Read the offset of the xref table directly from file content
 		 *
-         * @note content has been previously been defined in $this->buffer
+         * @note content has been previously been defined in $this->get_buffer()
 		 * @param int $object_id an object id, a integer value starting from 1
 		 * @return int the wished xrefstart offset value
          */
@@ -1138,7 +1138,7 @@ if (!call_user_func_array('class_exists', $__tmp)) {
 			static $positions=null;
 			static $shifts=null;
 			
-			if(is_null($offsets)) { //...variables content set once. This is the beauty of php :)
+			//if(is_null($offsets)) { //...variables content set once. This is the beauty of php :)
 			
 				//!NOTE: xref table is ordered by object id (position's object is not defined linearly in the pdf !)
 				$positions=$this->_get_positions_ordered();
@@ -1146,7 +1146,7 @@ if (!call_user_func_array('class_exists', $__tmp)) {
 				$offsets=$this->_get_offsets_starting_from_zero();
 				//Shifts are already 0 indexed, don't change.
 				$shifts=$this->shifts;
-			}
+			//}
 			
 			$p=$positions[$object_id];
 			$offset=$offsets[$p];
@@ -1158,13 +1158,13 @@ if (!call_user_func_array('class_exists', $__tmp)) {
 		/**
          * Reads the offset of the xref table directly from file content
 		 *
-         * @note content has been previously been defined in $this->buffer
+         * @note content has been previously been defined in $this->get_buffer()
 		 * @param int $object_id an object id, a integer value starting from 1
 		 * @return int the wished offset
          */
 		function read_offset_object_value($object_id) {
 		//------------------------------
-			$buffer=$this->buffer;
+			$buffer=$this->get_buffer();
 			$previous_object_footer='';//'endobj' or comment;
 			$object_header=$previous_object_footer.'\n'.$object_id.' 0 obj';
 			$chars = preg_split('/'.$object_header.'/', $buffer, -1, PREG_SPLIT_OFFSET_CAPTURE);
@@ -1266,7 +1266,7 @@ if (!call_user_func_array('class_exists', $__tmp)) {
 				$extract_offset_value_from_file=($this->safe_mode||$this->check_mode);
 				
 				//Get new file content (ie with values changed)
-				$this->buffer=$this->get_buffer();
+				//$this->get_buffer()=$this->get_buffer();
 				
 				for($i=0;$i<$xLen;$i++) {
 				
@@ -2113,4 +2113,3 @@ if (!call_user_func_array('class_exists', $__tmp)) {
 }
 
 unset($__tmp);
-?>

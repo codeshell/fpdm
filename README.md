@@ -1,9 +1,10 @@
 # Form filling
 The FPDM class allows to fill out PDF forms, i.e. populate fields of a PDF file. It is **developed by Olivier Plathey**, author of the [FDPF Library](http://www.fpdf.org/), and has been released as [Skript 93](http://www.fpdf.org/en/script/script93.php).
 
-I created this repository for two reasons:
-- make the current FPDM source available via [composer](https://packagist.org/packages/codeshell/fpdm)
+I created this repository for the following reasons:
+- make the current FPDM source available via [composer](https://packagist.org/packages/tmw/fpdm)
 - fix compatibility issues with PHP 7.x
+- bugfixing
 
 This repository only contains the separate php class written for form filling. If you are looking for a repository containing the main FPDF Library, please head over to [github.com/Setasign/FPDF](https://github.com/Setasign/FPDF).
 
