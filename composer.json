@@ -1,5 +1,5 @@
 {
-	"name" : "codeshell/fpdm",
+	"name" : "tmw/fpdm",
 	"description" : "PDF form filling using FPDM Class written by FPDF author Olivier",
 	"type" : "library",
 	"license" : "MIT",
