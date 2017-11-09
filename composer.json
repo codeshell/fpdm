@@ -16,11 +16,8 @@
 	],
 	"homepage" : "https://github.com/codeshell/fpdm",
 	"autoload" : {
-		"psr-0" : {
-			"FPDM" : ""
-		},
 		"psr-4" : {
-			"FPDM" : ""
+			"tmw\\fpdm\\" : ""
 		}
 	},
 	"repositories" : [{
