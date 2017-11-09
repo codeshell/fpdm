@@ -15,10 +15,8 @@
 		}
 	],
 	"homepage" : "https://github.com/codeshell/fpdm",
-	"autoload" : {
-		"psr-4" : {
-			"tmw\\fpdm\\" : ""
-		}
+	"autoload": {
+		"classmap": ["fpdm.php"]
 	},
 	"repositories" : [{
 			"type" : "git",
