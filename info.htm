@@ -1,0 +1,31 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<title>Form filling</title>
+<style type="text/css">
+body {font-family:"Times New Roman",serif}
+h1 {font:bold 135% Arial,sans-serif; color:#4000A0; margin-bottom:0.9em}
+h2 {font:bold 95% Arial,sans-serif; color:#900000; margin-top:1.5em; margin-bottom:1em}
+</style>
+</head>
+<body>
+<h1>Form filling</h1>
+<h2>Informations</h2>
+Author: Olivier<br>
+License: FPDF
+<h2>Description</h2>
+This script allows to merge data into a PDF form. Given a template PDF with text fields, it's
+possible to inject values in two different ways:
+<ul style="margin-left:1.5em; padding:0">
+<li>from a PHP array</li>
+<li>from an <abbr title="Forms Data Format">FDF</abbr> file</li>
+</ul>
+The resulting document is produced by the Output() method, which works the same as for FPDF.<br>
+<br>
+Note: if your template PDF is not compatible with this script, you can process it with
+<a href="https://www.pdflabs.com/tools/pdftk-server/" target="_blank">PDFtk</a> this way:
+<p><kbd>pdftk modele.pdf output modele2.pdf</kbd></p>
+Then try again with modele2.pdf.
+</body>
+</html>

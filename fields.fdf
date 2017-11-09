@@ -1,0 +1,12 @@
+%FDF-1.2
+%‚„œ”
+1 0 obj
+<< 
+/FDF <</Fields [<</T (name) /V (My name)>> <</T (address) /V (My address)>> <</T (city) /V (My city)>> <</T (phone) /V (My phone number)>>] /F (template.pdf)>>
+>> 
+endobj
+trailer
+<<
+/Root 1 0 R
+>>
+%%EOF
