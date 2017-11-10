@@ -13,6 +13,22 @@ Once again, all credits to Olivier Plathey for providing an easy to use extensio
 # Version
 Based on version 2.9 (2017-05-11) available from http://www.fpdf.org/en/script/script93.php
 
+# Usage
+## Composer (autoload)
+As this package specifies autoloading information, you can [autoload](https://getcomposer.org/doc/01-basic-usage.md#autoloading) all the dependencies by adding this to your code:
+
+`require 'vendor/autoload.php';`
+
+## Standalone Script
+Load the class file by calling
+
+`require_once '/abolute/path/to/fpdm.php';`
+
+or
+
+`require_once './relative/path/to/fpdm.php';`
+
+
 # Original Info Page
 ## Information
 Author: Olivier
@@ -43,8 +59,6 @@ This example shows how to merge data from an array:
 /***************************
   Sample using a PHP array
 ****************************/
-
-require('fpdm.php');
 
 $fields = array(
     'name'    => 'My name',
