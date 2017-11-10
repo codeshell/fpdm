@@ -33,6 +33,7 @@
 * 	V1.0 (03.11.2010) First working release                                    *
 *******************************************************************************/
 
+global $FPDM_FILTERS, $FPDM_REGEXPS; //needs explicit global scope, otherwise autoloading will br incomplete.
 $FPDM_FILTERS=array(); //holds all supported filters
 $FPDM_REGEXPS= array(
 	"/Type"=>"/\/Type\s+\/(\w+)$/",
