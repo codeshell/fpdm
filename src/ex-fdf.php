@@ -4,7 +4,7 @@
   Sample using an FDF file
 ****************************/
 
-require('fpdm.php');
+use Shihjay2\Fpdm\FPDM;
 
 $pdf = new FPDM('template.pdf', 'fields.fdf');
 $pdf->Merge();

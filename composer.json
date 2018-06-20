@@ -1,6 +1,6 @@
 {
-	"name" : "tmw/fpdm",
-	"description" : "PDF form filling using FPDM Class written by FPDF author Olivier",
+	"name" : "shihjay2/fpdm",
+	"description" : "PDF form filling using FPDM Class written by FPDF author Olivier for Laravel 5",
 	"type" : "library",
 	"license" : "MIT",
 	"authors" : [{
@@ -12,11 +12,17 @@
 			"name" : "codeshell",
 			"role" : "Developer",
 			"homepage" : "https://github.com/codeshell/"
+		}, {
+			"name" : "Michael Chen",
+			"role" : "Developer",
+			"homepage" : "https://github.com/shihjay2/"
 		}
 	],
-	"homepage" : "https://github.com/codeshell/fpdm",
+	"homepage" : "https://github.com/shihjay2/fpdm",
 	"autoload": {
-		"classmap": ["fpdm.php"]
+		"psr-4": {
+			"Shihjay2\\Fpdm\\": "src/"
+		}
 	},
 	"repositories" : [{
 			"type" : "git",
@@ -34,10 +40,11 @@
 		"fields",
 		"fill",
 		"populate",
-		"FPDF"
+		"FPDF",
+		"Laravel"
 	],
 	"support" : {
-		"issues" : "https://github.com/codeshell/fpdm/issues",
-		"source" : "https://github.com/codeshell/fpdm/tree/master"
+		"issues" : "https://github.com/shihjay2/fpdm/issues",
+		"source" : "https://github.com/shihjay2/fpdm/tree/master"
 	}
 }
