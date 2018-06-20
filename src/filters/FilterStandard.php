@@ -1,5 +1,5 @@
 <?php
-
+	namespace Shihjay2\Fpdm\filters;
 	//
 	//  FPDM - Filter Standard
 	//  NOTE: dummy filter for unfiltered streams!

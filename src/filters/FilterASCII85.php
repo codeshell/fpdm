@@ -1,4 +1,5 @@
 <?php
+namespace Shihjay2\Fpdm\filters;
 //
 //  FPDI - Version 1.3.4
 //
@@ -21,7 +22,7 @@ if (!defined('ORD_z'))
 	define('ORD_z',ord('z'));
 if (!defined('ORD_exclmark'))
 	define('ORD_exclmark', ord('!'));
-if (!defined('ORD_u'))	
+if (!defined('ORD_u'))
 	define('ORD_u', ord('u'));
 if (!defined('ORD_tilde'))
 	define('ORD_tilde', ord('~'));
@@ -31,24 +32,24 @@ if (!call_user_func_array('class_exists', $__tmp)) {
 
 
 	if(isset($FPDM_FILTERS)) array_push($FPDM_FILTERS,"ASCII85Decode");
-	
-	
+
+
     class FilterASCII85 {
-        
+
         function error($msg) {
             die($msg);
         }
-        
+
         function decode($in) {
             $out = '';
             $state = 0;
             $chn = null;
-            
+
             $l = strlen($in);
-            
+
             for ($k = 0; $k < $l; ++$k) {
                 $ch = ord($in[$k]) & 0xff;
-                
+
                 if ($ch == ORD_tilde) {
                     break;
                 }
@@ -62,9 +63,9 @@ if (!call_user_func_array('class_exists', $__tmp)) {
                 if ($ch < ORD_exclmark || $ch > ORD_u) {
                     return $this->error('Illegal character in ASCII85Decode.');
                 }
-                
+
                 $chn[$state++] = $ch - ORD_exclmark;
-                
+
                 if ($state == 5) {
                     $state = 0;
                     $r = 0;
@@ -77,7 +78,7 @@ if (!call_user_func_array('class_exists', $__tmp)) {
                 }
             }
             $r = 0;
-            
+
             if ($state == 1)
                 return $this->error('Illegal length in ASCII85Decode.');
             if ($state == 2) {
@@ -95,10 +96,10 @@ if (!call_user_func_array('class_exists', $__tmp)) {
                 $out .= chr($r >> 16);
                 $out .= chr($r >> 8);
             }
-    
+
             return $out;
         }
-        
+
         function encode($in) {
             return $this->error("ASCII85 encoding not implemented.");
         }
