@@ -17,24 +17,10 @@ Note: If you find that a new version has been hosted on fpdf.org, please do not 
 
 # Installation
 
-Add the following line to the `require` section of `composer.json`:
+Enter:
 
-```json
-{
-    "require": {
-        "shihjay2/fpdf": "1.0.*"
-    }
-}
-```
+`composer require shihjay2/fpdf`
 
-And run:
-`$ php composer update`
-
-## How to use?
-
-Use simply:
-
-    $pdf = new \Ladislau\Fpdf\FPDF;
 # Usage
 
 At the top of your controller:

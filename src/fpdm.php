@@ -42,11 +42,16 @@ $FPDM_REGEXPS= array(
 );
 
 //Major stream filters come from FPDI's stuff but I've added some :)
-require_once("filters/FilterASCIIHex.php");
-require_once("filters/FilterASCII85.php");
-require_once("filters/FilterFlate.php");
-require_once("filters/FilterLZW.php");
-require_once("filters/FilterStandard.php");
+require('filters/FilterASCII85.php');
+require('filters/FilterASCIIHex.php');
+require('filters/FilterFlate.php');
+require('filters/FilterLZW.php');
+require('filters/FilterStandard.php');
+use Shihjay2\Fpdm\filters\FilterASCIIHex;
+use Shihjay2\Fpdm\filters\FilterASCII85;
+use Shihjay2\Fpdm\filters\FilterFlate;
+use Shihjay2\Fpdm\filters\FilterLZW;
+use Shihjay2\Fpdm\filters\FilterStandard;
 
 
 $__tmp = version_compare(phpversion(), "5") == -1 ? array('FPDM') : array('FPDM', false);
