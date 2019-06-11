@@ -11,7 +11,9 @@ This repository only contains the separate php class written for form filling. I
 Once again, all credits to Olivier Plathey for providing an easy to use extension to his FPDF library!
 
 # Version
-Based on version 2.9 (2017-05-11) available from http://www.fpdf.org/en/script/script93.php
+Based on version 2.9 (2017-05-11) available from [fpdf.org/en/script/script93.php](http://www.fpdf.org/en/script/script93.php).
+
+Note: If you find that a new version has been hosted on fpdf.org, please do not hesitate to drop me [a short note](https://github.com/codeshell/fpdm/issues) to make sure I do not miss it out.
 
 # Usage
 ## Composer (autoload)
