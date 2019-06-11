@@ -33,9 +33,14 @@
 * 	V1.0 (03.11.2010) First working release                                    *
 *******************************************************************************/
 
-global $FPDM_FILTERS, $FPDM_REGEXPS; //needs explicit global scope, otherwise autoloading will br incomplete.
+global $FPDM_FILTERS, $FPDM_REGEXPS; //needs explicit global scope, otherwise autoloading will be incomplete.
 $FPDM_FILTERS=array(); //holds all supported filters
 $FPDM_REGEXPS= array(
+	//FIX: parse checkbox definition
+	"/AS"=>"/\/AS\s+\/(\w+)$/",
+	"name"=>"/\/(\w+)/",
+	// "/AP_D_SingleLine"=>"/\/D\s+\/(\w+)\s+\d+\s+\d+\s+R\s+\/(\w+)$/",
+	//ENDFIX
 	"/Type"=>"/\/Type\s+\/(\w+)$/",
 	"/Subtype" =>"/^\/Subtype\s+\/(\w+)$/"
 );
@@ -66,7 +71,7 @@ if (!call_user_func_array('class_exists', $__tmp)) {
 	
     class FPDM {
     //@@@@@@@@@
-	
+		var $useCheckboxParser = false;      //boolean: allows activation of custom checkbox parser (not available in original FPDM source)
 
 		var $pdf_source = '';      //string: full pathname to the input pdf , a form file
 		var $fdf_source = '';	  //string: full pathname to the input fdf , a form data file
@@ -867,7 +872,10 @@ if (!call_user_func_array('class_exists', $__tmp)) {
 			 
 					$offset_shift=$this->set_field_tooltip($name,$value);
 			 
-				} else {//if(isset($this->value_entries["$name"]["values"]["$type"])) {
+				} elseif ($this->useCheckboxParser && isset($this->value_entries["$name"]['infos']['checkbox_state'])) { //FIX: set checkbox value
+                    $offset_shift=$this->set_field_checkbox($name, $value);
+                //ENDFIX
+                } else {//if(isset($this->value_entries["$name"]["values"]["$type"])) {
 //				echo $this->value_entries["$name"]["values"]["$type"];
 /*					$field_value_line=$this->value_entries["$name"]["values"]["$type"];
 					$field_value_maxlen=$this->value_entries["$name"]["constraints"]["maxlen"];
@@ -920,6 +928,60 @@ if (!call_user_func_array('class_exists', $__tmp)) {
 				$this->Error("set_field_tooltip failed as the field $name does not exist");
 			return $offset_shift;
 		}
+		
+        //FIX: parse checkbox definition
+        /**
+        *Changes the checkbox state.
+        *
+        *@param string $name name of the field to change the state
+        *@param string $value the new state to set
+        *@return int offset_shift the size variation
+        **/
+        public function set_field_checkbox($name, $value)
+        {
+            //------------------------------------
+            $offset_shift=0;
+            $verbose_set=($this->verbose&&($this->verbose_level>1));
+            //Get the line(s) of the misc field values
+            if (isset($this->value_entries["$name"])) {
+                if (isset($this->value_entries["$name"]["infos"]["checkbox_state_line"])
+                && isset($this->value_entries["$name"]["infos"]["checkbox_no"])
+                && isset($this->value_entries["$name"]["infos"]["checkbox_yes"])) {
+                    $field_checkbox_line=$this->value_entries["$name"]["infos"]["checkbox_state_line"];
+                    if ($field_checkbox_line) {
+                        if ($verbose_set) {
+                            echo "<br>Change checkbox of the field $name at line $field_checkbox_line to value [$value]";
+                        }
+                        $state = $this->value_entries["$name"]["infos"]["checkbox_no"];
+                        if ($value) {
+                            $state = $this->value_entries["$name"]["infos"]["checkbox_yes"];
+                        }
+                        $CurLine =$this->pdf_entries[$field_checkbox_line];
+                        $OldLen=strlen($CurLine);
+                        $CurLine = '/AS /'.$state;
+                        $NewLen=strlen($CurLine);
+                        $Shift=$NewLen-$OldLen;
+                        $this->shift=$this->shift+$Shift;
+                        //Saves
+                        $this->pdf_entries[$field_checkbox_line]=$CurLine;
+                        return $Shift;
+                    // $offset_shift=$this->_set_field_value($field_checkbox_line, $state);
+                    } else {
+                        if ($verbose_set) {
+                            echo "<br>Change checkbox value aborted, parsed checkbox definition incomplete.";
+                        }
+                    }
+                } else {
+                    if ($verbose_set) {
+                        echo "<br>Change checkbox value aborted, the field $name has no checkbox definition.";
+                    }
+                }
+            } else {
+                $this->Error("set_field_checkbox failed as the field $name does not exist");
+            }
+            return $offset_shift;
+        }
+        //ENDFIX
 		
 		/**
 		*Dumps the line entries 
@@ -1566,7 +1628,14 @@ if (!call_user_func_array('class_exists', $__tmp)) {
            
             $Counter=0;
             $obj=0; //this is an invalid object id, we use it to know if we are into an object
-			$type='';
+            //FIX: parse checkbox definition
+            $ap_d_yes='';
+            $ap_d_no='';
+            $ap_line=0;
+            $ap_d_line=0;
+            $as='';
+            //ENDFIX
+            $type='';
 			$subtype='';
 			$name='';
 			$value='';
@@ -1642,6 +1711,13 @@ if (!call_user_func_array('class_exists', $__tmp)) {
 								
 								$object=null;
 								$obj=0;
+								//FIX: parse checkbox definition
+								$ap_d_yes='';
+								$ap_d_no='';
+								$ap_line=0;
+								$ap_d_line=0;
+								$as='';
+								//ENDFIX
 								$type='';
 								$subtype='';
 								$name='';
@@ -1768,6 +1844,40 @@ if (!call_user_func_array('class_exists', $__tmp)) {
 									//=== DEFINITION ====
 									//preg_match("/^\/Type\s+\/(\w+)$/",$CurLine,$match)
 									$match=array();
+									//FIX: parse checkbox definition
+									if($this->useCheckboxParser && ('' == $ap_d_yes || '' == $ap_d_no || '' == $as)) {
+                                        if (!$ap_line && '/AP' == substr($CurLine, 0, 3)) {
+                                            if ($verbose_parsing) {
+                                                echo("<br>Found AP Line '<i>$Counter</i>'");
+                                            }
+                                            $ap_line = $Counter;
+                                        } elseif (!$ap_d_line && '/D' == substr($CurLine, 0, 2)) {
+                                            if ($verbose_parsing) {
+                                                echo("<br>Found D Line '<i>$Counter</i>'");
+                                            }
+                                            $ap_d_line = $Counter;
+                                        } elseif (($ap_line==$Counter-4)&&($ap_d_line==$Counter-2)&&($ap_d_yes=='')&&$this->extract_pdf_definition_value("name", $CurLine, $match)) {
+                                            $ap_d_yes=$match[1];
+                                            if ($verbose_parsing) {
+                                                echo("<br>Object's checkbox_yes is '<i>$ap_d_yes</i>'");
+                                            }
+                                            $object["infos"]["checkbox_yes"]=$ap_d_yes;
+                                        } elseif (($ap_line==$Counter-5)&&($ap_d_line==$Counter-3)&&($ap_d_no=='')&&$this->extract_pdf_definition_value("name", $CurLine, $match)) {
+                                            $ap_d_no=$match[1];
+                                            if ($verbose_parsing) {
+                                                echo("<br>Object's checkbox_no is '<i>$ap_d_no</i>'");
+                                            }
+                                            $object["infos"]["checkbox_no"]=$ap_d_no;
+                                        } elseif (($as=='')&&$this->extract_pdf_definition_value("/AS", $CurLine, $match)) {
+                                            $as=$match[1];
+                                            if ($verbose_parsing) {
+                                                echo("<br>Object's AS is '<i>$as</i>'");
+                                            }
+                                            $object["infos"]["checkbox_state"]=$as;
+                                            $object["infos"]["checkbox_state_line"]=$Counter;
+                                        }
+									}
+									//ENDFIX
 									if(($type=='')||($subtype=='')||($name=="")) {
 									
 										if(($type=='')&&$this->extract_pdf_definition_value("/Type",$CurLine,$match)) {
