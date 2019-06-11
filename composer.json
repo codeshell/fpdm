@@ -19,8 +19,8 @@
   "homepage": "https://github.com/codeshell/fpdm",
   "autoload": {
     "classmap": [
-      "fpdm.php",
-      "filters/"
+      "src/fpdm.php",
+      "src/filters/"
     ]
   },
   "repositories": [

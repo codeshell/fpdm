@@ -41,6 +41,9 @@ $FPDM_REGEXPS= array(
 );
 
 //Major stream filters come from FPDI's stuff but I've added some :)
+if (!defined('FPDM_DIRECT')) {
+	$FPDM_FILTERS = array("LZWDecode", "ASCIIHexDecode", "ASCII85Decode", "FlateDecode", "Standard"	);
+}
 // require_once("filters/FilterASCIIHex.php");
 // require_once("filters/FilterASCII85.php");
 // require_once("filters/FilterFlate.php");
@@ -1021,7 +1024,7 @@ if (!call_user_func_array('class_exists', $__tmp)) {
 		*
 		*@access private
 		*@note Function was written because PHP has a bin2hex, but not a hex2bin!
-		*@internal note pack(ìCî,hexdec(substr($data,$i,2))) DOES NOT WORK
+		*@internal note pack(‚ÄúC‚Äù,hexdec(substr($data,$i,2))) DOES NOT WORK
 		*@param string $hexString the hexified string
 		*@return string $bin a binary string
 		**/
@@ -1386,9 +1389,9 @@ if (!call_user_func_array('class_exists', $__tmp)) {
 		*	JPXDecode : (PDF 1.5) Decompresses data encoded using the wavelet-based JPEG2000 standard, reproducing the original image data.
 		*With parameter(s):
 		*+  LZWDecode      : Decompresses data encoded using the LZW (Lempel-Ziv-Welch) adaptive compression method, reproducing the original text or binary data.
-		*+	FlateDecode (PDF†1.2): Decompresses data encoded using the zlib/deflate compression method, reproducing the original text or binary data.
+		*+	FlateDecode (PDF¬†1.2): Decompresses data encoded using the zlib/deflate compression method, reproducing the original text or binary data.
 		*   CCITTFaxDecode : Decompresses data encoded using the CCITT facsimile standard, reproducing the original data (typically monochrome image data at 1 bit per pixel).
-		*   JBIG2Decode (PDF†1.4) :Decompresses data encoded using the JBIG2 standard, reproducing the original monochrome (1 bit per pixel) image data (or an approximation of that data).
+		*   JBIG2Decode (PDF¬†1.4) :Decompresses data encoded using the JBIG2 standard, reproducing the original monochrome (1 bit per pixel) image data (or an approximation of that data).
 		*   DCTDecode : Decompresses data encoded using a DCT (discrete cosine transform) technique based on the JPEG standard, reproducing image sample data that approximates the original data.
 		*	Crypt (PDF 1.5) :Decrypts data encrypted by a security handler, reproducing the data as it was before encryption.
 		*@return the wished filter class to access the stream
