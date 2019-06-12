@@ -21,15 +21,19 @@ Based on version 2.9 (2017-05-11) available from [fpdf.org/en/script/script93.ph
 
 Note: If you find that a new version has been hosted on fpdf.org, please do not hesitate to drop me [a short note](https://github.com/codeshell/fpdm/issues) to make sure I do not miss it out.
 
-## Usage
+## Installation 
 
-### Composer (autoload)
+### Composer
 
 The preferred way of making FPDM available in your app is to install it via composer with
 
 `composer require tmw/fpdm`
 
-and then to [autoload](https://getcomposer.org/doc/01-basic-usage.md#autoloading) it by adding this to your code:
+## Usage
+
+### Composer (autoload)
+
+[autoload](https://getcomposer.org/doc/01-basic-usage.md#autoloading) FPDM class files by adding this to your code:
 
 `require 'vendor/autoload.php';`
 
@@ -43,9 +47,23 @@ or
 
 `require_once './relative/path/to/fpdm.php';`
 
-## Customization
+## Customization to original code
 
-Added support for checkboxes. The feature is not heavily tested but works for me. Can be enabled with
+### classmaps vs. psr-4 (or: legacy code vs modern frameworks á la Laravel)
+
+Autoloading classes with [namespaces](https://www.php.net/manual/en/language.namespaces.basics.php) and following [PSR-4: Autoloader](https://www.php-fig.org/psr/psr-4/) would be desireable. Especially reducing the risk of naming conflicts by using vendor namespaces.
+
+However, FPDM has been around for a long time and as such is used in many projects that use non-namespaced code (I refer to them as legacy projects). Legacy projects instantiate FPDM by calling `$mypdf = new FPDM()` which is unqualified but defaults to the global namespace with non-namespaced code.
+
+Using psr-4 would autoload the class to a subnamespace (e.g. \codeshell\fpdm\FPDM) instead of the global namespace (e.g. \FPDM) thus breaking any legacy code no matter if it used `new FPDM()` or `new \FPDM()`.
+
+__Classmaps are a compromise.__ They allow taking advantage of composers autoloading and dependency management. Yet classes are added to the global namespace. Legacy projects can switch to composer without having to refactor their code. __Newer projects (e.g. utilizing frameworks like laravel, that heavily rely on namespaces) can still use legacy classes__ by using the fully qualified name (in this case the class name prefixed with global prefix operator as in `new \FPDM()`).
+
+That's my reasoning for using classmaps over psr-4 for FPDM. Please let me know if there are use cases where classmaps won't work with modern frameworks.
+
+### Checkboxes
+
+I added support for checkboxes. The feature is not heavily tested but works for me. Can be enabled with `useCheckboxParser = true` like so:
 
 ```php
 <?php
@@ -55,8 +73,8 @@ $fields = array(
 );
 
 $pdf = new FPDM('template.pdf');
-$pdf->useCheckboxParser = true;
-$pdf->Load($fields, false); // second parameter: false if field values are in ISO-8859-1, true if UTF-8
+$pdf->useCheckboxParser = true; // Checkbox parsing is ignored (default FPDM behaviour) unless enabled with this setting
+$pdf->Load($fields, true);
 $pdf->Merge();
 $pdf->Output();
 ```
@@ -64,6 +82,7 @@ $pdf->Output();
 You don't have to figure out the technical names of checkbox states. They are retrieved during the parsing process.
 
 ## Original Info Page
+_Everything below is mirrored from http://www.fpdf.org/en/script/script93.php ._
 
 ### Information
 
