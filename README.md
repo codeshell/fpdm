@@ -6,20 +6,23 @@ The FPDM class allows to fill out PDF forms, i.e. populate fields of a PDF file.
 
 I created this repository for the following reasons:
 
-- make the current FPDM source available via [composer](https://packagist.org/packages/tmw/fpdm)
-- fix compatibility issues with PHP 7.x
-- bugfixing (changes to the original codebase are prefixed with `//FIX: change description` and ended with `//ENDFIX`)
-- add support for checkboxes (disabled by default, see customization to activate)
-
-This repository only contains the separate php class written for form filling. If you are looking for a repository containing the main FPDF Library, please head over to [github.com/Setasign/FPDF](https://github.com/Setasign/FPDF).
-
-Once again, all credits to Olivier Plathey for providing an easy to use extension to his FPDF library!
+- make the current FPDM source available via [composer](https://packagist.org/packages/tmw/fpdm), autoload via classmaps
+- bugfixing
+    - FIX: compatibility issues with PHP 7.x [e376dc1](https://github.com/codeshell/fpdm/commit/e376dc157655ded24c61e098199586f3325d63c1) v2.9.1
+    - FIX: filling forms in multiple files (wrong buffer usage, invalid offsets) [e376dc1](https://github.com/codeshell/fpdm/commit/e376dc157655ded24c61e098199586f3325d63c1) v2.9.1
+    - FIX: convert ASCII object names to utf-8 [1eddba7](https://github.com/codeshell/fpdm/commit/1eddba76f610690821e8c0b3753df337a6cf65f7) v2.9.2
+- improvements (changes to the original codebase are prefixed with `//FIX: change description` and ended with `//ENDFIX`)
+    - ADD: support for checkboxes (disabled by default, activate with `$pdf->useCheckboxParser = true;`) [0375dd9](https://github.com/codeshell/fpdm/commit/0375dd95f05fd2d8d32d9ae1ab882fa0895b07b3) v2.9.2
 
 ## Version
 
 Based on version 2.9 (2017-05-11) available from [fpdf.org/en/script/script93.php](http://www.fpdf.org/en/script/script93.php).
 
-Note: If you find that a new version has been hosted on fpdf.org, please do not hesitate to drop me [a short note](https://github.com/codeshell/fpdm/issues) to make sure I do not miss it out.
+_Note: If you find that a new version has been hosted on fpdf.org, please do not hesitate to drop me [a short note](https://github.com/codeshell/fpdm/issues) to make sure I do not miss it out._
+
+This repository only contains the separate php class written for form filling (FPD**M**). If you are looking for a repository containing the main FPD**F** Library, please head over to [github.com/Setasign/FPDF](https://github.com/Setasign/FPDF).
+
+Once again, all credits to Olivier Plathey for providing an easy to use script for form filling in addition to his FPDF library!
 
 ## Installation 
 
