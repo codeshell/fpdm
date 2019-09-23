@@ -1632,6 +1632,7 @@ if (!call_user_func_array('class_exists', $__tmp)) {
             $ap_d_yes='';
             $ap_d_no='';
             $ap_line=0;
+            $ap_n_line=0;
             $ap_d_line=0;
             $as='';
             //ENDFIX
@@ -1715,6 +1716,7 @@ if (!call_user_func_array('class_exists', $__tmp)) {
 								$ap_d_yes='';
 								$ap_d_no='';
 								$ap_line=0;
+								$ap_n_line=0;
 								$ap_d_line=0;
 								$as='';
 								//ENDFIX
@@ -1845,25 +1847,31 @@ if (!call_user_func_array('class_exists', $__tmp)) {
 									//preg_match("/^\/Type\s+\/(\w+)$/",$CurLine,$match)
 									$match=array();
 									//FIX: parse checkbox definition
+                                    //see page 498: https://www.adobe.com/content/dam/acom/en/devnet/pdf/pdfs/pdf_reference_archives/PDFReference.pdf
 									if($this->useCheckboxParser && ('' == $ap_d_yes || '' == $ap_d_no || '' == $as)) {
                                         if (!$ap_line && '/AP' == substr($CurLine, 0, 3)) {
                                             if ($verbose_parsing) {
                                                 echo("<br>Found AP Line '<i>$Counter</i>'");
                                             }
                                             $ap_line = $Counter;
+                                        } elseif (!$ap_n_line && '/N' == substr($CurLine, 0, 2)) {
+                                            if ($verbose_parsing) {
+                                                echo("<br>Found N Line '<i>$Counter</i>'");
+                                            }
+                                            $ap_n_line = $Counter;
                                         } elseif (!$ap_d_line && '/D' == substr($CurLine, 0, 2)) {
                                             if ($verbose_parsing) {
                                                 echo("<br>Found D Line '<i>$Counter</i>'");
                                             }
                                             $ap_d_line = $Counter;
-                                        } elseif (($ap_line==$Counter-4)&&($ap_d_line==$Counter-2)&&($ap_d_yes=='')&&$this->extract_pdf_definition_value("name", $CurLine, $match)) {
-                                            $ap_d_yes=$match[1];
+                                        } elseif(($ap_n_line == $Counter-2 || $ap_d_line == $Counter-2) && $ap_d_yes == '' && $this->extract_pdf_definition_value("name", $CurLine, $match)) {
+                                            $ap_d_yes = $match[1];
                                             if ($verbose_parsing) {
                                                 echo("<br>Object's checkbox_yes is '<i>$ap_d_yes</i>'");
                                             }
                                             $object["infos"]["checkbox_yes"]=$ap_d_yes;
-                                        } elseif (($ap_line==$Counter-5)&&($ap_d_line==$Counter-3)&&($ap_d_no=='')&&$this->extract_pdf_definition_value("name", $CurLine, $match)) {
-                                            $ap_d_no=$match[1];
+                                        } elseif(($ap_n_line == $Counter-3 || $ap_d_line == $Counter-3) && $ap_d_no == '' && $this->extract_pdf_definition_value("name", $CurLine, $match)) {
+                                            $ap_d_no = $match[1];
                                             if ($verbose_parsing) {
                                                 echo("<br>Object's checkbox_no is '<i>$ap_d_no</i>'");
                                             }
