@@ -471,7 +471,7 @@ if (!call_user_func_array('class_exists', $__tmp)) {
 		*@internal flatten mode is not yet supported
 		*@param Boolean flatten Optional, false by default, if true will use pdftk (requires a shell) to flatten the pdf form
 		**/
-		function Merge($flatten=false) {
+		function Merge($flatten=false,$read_only=false) {
 		//------------------------------
 		
 			if($flatten) $this->Flatten();
@@ -504,7 +504,7 @@ if (!call_user_func_array('class_exists', $__tmp)) {
 					//==== Alterate work is made here: change values ============
 					if($count_fields) {
 						foreach($fields as $name => $value) {
-							$this->set_field_value("current",$name,$value);
+							$this->set_field_value("current",$name,$value,$read_only);
 //							$value=''; //Strategy applies only to current value, clear others
 //							$this->set_field_value("default",$name,$value);
 //							$this->set_field_value("tooltip",$name,$value);
@@ -823,7 +823,7 @@ if (!call_user_func_array('class_exists', $__tmp)) {
 			return $this->_bin2hex($str);
 		}
 		
-		function _set_field_value2($line,$value,$append) {
+		function _set_field_value2($line,$value,$append,$read_only) {
 			$CurLine=$this->pdf_entries[$line];
 			$OldLen=strlen($CurLine);
 
@@ -843,6 +843,9 @@ if (!call_user_func_array('class_exists', $__tmp)) {
 				else
 					$this->Error('/V not found');
 			}
+			if ($read_only) {
+				$CurLine .= ' /Ff 1';
+			}
 
 			$NewLen=strlen($CurLine);
 			$Shift=$NewLen-$OldLen;
@@ -859,7 +862,7 @@ if (!call_user_func_array('class_exists', $__tmp)) {
 		*@param string $name name of the field annotation to change the value
 		*@param string $value the new value to set
 		**/
-		function set_field_value($type,$name,$value) {
+		function set_field_value($type,$name,$value,$read_only=false) {
 		//------------------------------------
 			$verbose_set=($this->verbose&&($this->verbose_level>1));
 			
@@ -886,9 +889,9 @@ if (!call_user_func_array('class_exists', $__tmp)) {
 					if($verbose_set) echo "<br>Change $type value of the field $name at line $field_value_line to '<i>$value</i>'";
 					$offset_shift=$this->_set_field_value($field_value_line,$value);*/
 					if(isset($this->value_entries[$name]["values"]["current"]))
-						$offset_shift=$this->_set_field_value2($this->value_entries[$name]["values"]["current"],$value,false);
+						$offset_shift=$this->_set_field_value2($this->value_entries[$name]["values"]["current"],$value,false,$read_only);
 					else
-						$offset_shift=$this->_set_field_value2($this->value_entries[$name]["infos"]["name_line"],$value,true);
+						$offset_shift=$this->_set_field_value2($this->value_entries[$name]["infos"]["name_line"],$value,true,$read_only);
 				}						
 //				}else
 //					$this->Error("set_field_value failed as invalid valuetype $type for object $object_id");
