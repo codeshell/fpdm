@@ -16,7 +16,7 @@
 		*@internal same as _hex2bin ($hexString)
 		*@access public
 		*@note Function was written because PHP has a bin2hex, but not a hex2bin!
-		*@internal note pack(ìCî,hexdec(substr($data,$i,2))) DOES NOT WORK
+		*@internal note pack(‚ÄúC‚Äù,hexdec(substr($data,$i,2))) DOES NOT WORK
 		*
 		**/
 	  function decode($data) {
@@ -54,7 +54,7 @@
 			$hex = "";
 			$i = 0;
 			do {
-				$hex .= sprintf("%02x", ord($str{$i}));
+				$hex .= sprintf("%02x", ord($str[$i]));
 				$i++;
 			} while ($i < strlen($str));
 			return $hex;
