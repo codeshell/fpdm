@@ -29,17 +29,17 @@ function escape_pdf_string( $ss )
   $ss_esc= '';
   $ss_len= strlen( $ss );
   for( $ii= 0; $ii< $ss_len; ++$ii ) {
-    if( ord($ss{$ii})== 0x28 ||  // open paren
-	ord($ss{$ii})== 0x29 ||  // close paren
-	ord($ss{$ii})== 0x5c )   // backslash
+    if( ord($ss[$ii])== 0x28 ||  // open paren
+	ord($ss[$ii])== 0x29 ||  // close paren
+	ord($ss[$ii])== 0x5c )   // backslash
       {
-	$ss_esc.= chr(0x5c).$ss{$ii}; // escape the character w/ backslash
+	$ss_esc.= chr(0x5c).$ss[$ii]; // escape the character w/ backslash
       }
-    else if( ord($ss{$ii}) < 32 || 126 < ord($ss{$ii}) ) {
-      $ss_esc.= sprintf( "\\%03o", ord($ss{$ii}) ); // use an octal code
+    else if( ord($ss[$ii]) < 32 || 126 < ord($ss[$ii]) ) {
+      $ss_esc.= sprintf( "\\%03o", ord($ss[$ii]) ); // use an octal code
     }
     else {
-      $ss_esc.= $ss{$ii};
+      $ss_esc.= $ss[$ii];
     }
   }
   return $ss_esc;
@@ -55,13 +55,13 @@ function escape_pdf_name( $ss )
   $ss_esc= '';
   $ss_len= strlen( $ss );
   for( $ii= 0; $ii< $ss_len; ++$ii ) {
-    if( ord($ss{$ii}) < 33 || 126 < ord($ss{$ii}) || 
-	ord($ss{$ii})== 0x23 ) // hash mark
+    if( ord($ss[$ii]) < 33 || 126 < ord($ss[$ii]) || 
+	ord($ss[$ii])== 0x23 ) // hash mark
       {
-	$ss_esc.= sprintf( "#%02x", ord($ss{$ii}) ); // use a hex code
+	$ss_esc.= sprintf( "#%02x", ord($ss[$ii]) ); // use a hex code
       }
     else {
-      $ss_esc.= $ss{$ii};
+      $ss_esc.= $ss[$ii];
     }
   }
   return $ss_esc;
