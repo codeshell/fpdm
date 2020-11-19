@@ -957,8 +957,8 @@ if (!call_user_func_array('class_exists', $__tmp)) {
                             $state = $this->value_entries["$name"]["infos"]["checkbox_yes"];
                         }
                         $CurLine =$this->pdf_entries[$field_checkbox_line];
-                        $OldLen=strlen($CurLine);
-                        $CurLine = '/AS /'.$state;
+                        $OldLen=strlen($CurLine);                        
+			$CurLine = '/AS /'.$state."\n/DV /$state\n/V /$state";
                         $NewLen=strlen($CurLine);
                         $Shift=$NewLen-$OldLen;
                         $this->shift=$this->shift+$Shift;
