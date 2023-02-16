@@ -791,7 +791,7 @@ if (!call_user_func_array('class_exists', $__tmp)) {
 			$OldLen=strlen($CurLine);
 			
 			//My PHP4/5 static call hack, only to make the callback $this->replace_value($matches,"$value") possible!
-			$callback_code='$THIS=new FPDM("[_STATIC_]");return $THIS->replace_value($matches,"'.$value.'");';
+			
 			
 			$field_regexp='/^\/(\w+)\s?(\<|\()([^\)\>]*)(\)|\>)/';
 			
@@ -799,7 +799,9 @@ if (!call_user_func_array('class_exists', $__tmp)) {
 				//modify it according to the new value $value
 				$CurLine = preg_replace_callback(
 					$field_regexp,
-					create_function('$matches',$callback_code),
+					static function ($matches) use ($value) {
+						return (new FPDM("[_STATIC_]"))->replace_value($matches, "'.$value.'");
+					},
 					$CurLine
 				);
 			}else {
