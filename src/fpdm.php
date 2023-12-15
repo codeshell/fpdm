@@ -113,6 +113,8 @@ if (!call_user_func_array('class_exists', $__tmp)) {
 		var $needAppearancesTrue = false;	//boolean, indicates if /NeedAppearances is already set to true
 		var $isUTF8 = false;				//boolean (true for UTF-8, false for ISO-8859-1)
 		
+		protected int $n = 0;
+
         /**
          * Constructor
          *
@@ -1123,7 +1125,7 @@ if (!call_user_func_array('class_exists', $__tmp)) {
 			$hex = "";
 			$i = 0;
 			do {
-				$hex .= sprintf("%02X", ord($str[$i]));
+				$hex .= sprintf("%02X", ord($str[$i]??''));
 				$i++;
 			} while ($i < strlen($str));
 			return $hex;
